@@ -25,7 +25,7 @@ jobs:
         run: npm run test > frontend-test.txt
 
       - name: Notify failure on Teams (Test Failure)
-        if: failure()
+        if: always()
         run: |
           TEST_RESULT=$(cat frontend-test.txt)
           curl -H 'Content-Type: application/json' \
