@@ -14,9 +14,13 @@ jobs:
         run: |
           echo 'Welcome to GitHub Actions' && exit 1
 
+      - name: Greeting
+        run: |
+          echo 'I am not likely to run'
+
       - name: Send message to Teams
         if: failure()
         run: |
           curl -H 'Content-Type: application/json' \
-          -d "{\"text\": \" Test message to Microsoft Teams for ${{ github.repository }} in branch ${{ github.ref }}\"}" \
+          -d "{\"text\": \" A pipeline step has failed for ${{ github.repository }} in branch ${{ github.ref }}\"}" \
           ${{ env.TEAMS_WEBHOOK_URL }}
