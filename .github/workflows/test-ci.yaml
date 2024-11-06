@@ -24,10 +24,15 @@ jobs:
       - name: Run test
         run: npm run test > frontend-test.txt
 
+      - name: Echo result
+        run: |
+          RESULT=$(cat frontend-test.txt)
+          echo $RESULT
+
       - name: Notify failure on Teams (Test Failure)
         if: always()
         run: |
           TEST_RESULT=$(cat frontend-test.txt)
           curl -H 'Content-Type: application/json' \
-          -d "{\"text\": \"❌ Test step failed in Frontend GitHub Actions for ${{ github.repository }} in branch ${{ github.ref }}. Test Result:\n$TEST_RESULT\"}" \
+          -d "{\"text\": \" Test step failed in Frontend GitHub Actions for ${{ github.repository }} in branch ${{ github.ref }}. Test Result:\n$TEST_RESULT\"}" \
           ${{ env.TEAMS_WEBHOOK_URL }}
