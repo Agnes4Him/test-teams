@@ -10,21 +10,24 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: Pull Docker image
-        run: docker pull nginx
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: Install Trivy
-        run: |
-          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
 
-      - name: Scan Docker image with Trivy
-        run: |
-          trivy image nginx > trivy-report.txt
+      - name: Install dependencies
+        run: npm install
 
-      - name: Notify scan result on Teams
+      - name: Run test
+        run: npm run test > frontend-test.txt
+
+      - name: Notify failure on Teams (Test Failure)
         if: failure()
         run: |
-          SCAN_RESULT=$(cat trivy-report.txt)
+          TEST_RESULT=$(cat frontend-test.txt)
           curl -H 'Content-Type: application/json' \
-          -d "{\"text\": \"🔍 Docker image scan completed for ${{ github.repository }} in branch ${{ github.ref }}, and vulnerabilities found. Scan Report:\n$SCAN_RESULT\"}" \
+          -d "{\"text\": \"❌ Test step failed in Frontend GitHub Actions for ${{ github.repository }} in branch ${{ github.ref }}. Test Result:\n$TEST_RESULT\"}" \
           ${{ env.TEAMS_WEBHOOK_URL }}
