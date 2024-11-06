@@ -22,7 +22,7 @@ jobs:
         run: npm install
 
       - name: Run test
-        run: npm run test > frontend-test.txt
+        run: npm run test | tee frontend-test.txt
 
       - name: Echo result
         run: |
