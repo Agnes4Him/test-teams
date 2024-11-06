@@ -10,11 +10,11 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: Greeting
+      - name: Failure step
         run: |
           echo 'Welcome to GitHub Actions' && exit 1
 
-      - name: Greeting
+      - name: Success step
         run: |
           echo 'I am not likely to run'
 
