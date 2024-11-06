@@ -1,0 +1,22 @@
+name: Testing...
+
+on: 
+  workflow_dispatch:
+
+env:
+  TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_CI_WEBHOOK_URL }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Greeting
+        run: |
+          echo 'Welcome to GitHub Actions'
+
+      - name: Send message to Teams
+        if: always()
+        run: |
+          curl -H 'Content-Type: application/json' \
+          -d "{\"text\": \"❌ Test message to Microsoft Teams for ${{ github.repository }} in branch ${{ github.ref }}\"}" \
+          ${{ env.TEAMS_WEBHOOK_URL }}
