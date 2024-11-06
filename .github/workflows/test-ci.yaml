@@ -24,10 +24,18 @@ jobs:
       - name: Run test
         run: npm run test
 
+      - name: Send failed test result to teams-ctrf
+        run: |
+          export TEAMS_WEBHOOK_URL=${{ env.TEAMS_WEBHOOK_URL }}
+          npx teams-ctrf results ctrf/ctrf-report.json
+
+      - name: Output test result to console
+        run: |
+           cat ctrf/ctrf-report.json
+
       - name: Notify Teams
         if: always()
         run: |
-          TEST_REPORT=$(cat ctrf/ctrf-report.json)
           curl -H 'Content-Type: application/json' \
-          -d "{\"text\": \"❌ Test step failed in Frontend GitHub Actions for ${{ github.repository }} in branch ${{ github.ref }}. Test Result:\n$TEST_REPORT\"}" \
+          -d "{\"text\": \"❌ Test result for ${{ github.repository }} in branch ${{ github.ref }}\"}" \
           ${{ env.TEAMS_WEBHOOK_URL }}
