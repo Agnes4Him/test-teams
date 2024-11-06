@@ -10,20 +10,21 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: Failure step
-        run: |
-          echo 'Welcome to GitHub Actions' && exit 1
+      - name: Pull Docker image
+        run: docker pull nginx
 
-      - name: Success step
+      - name: Install Trivy
         run: |
-          echo 'I am not likely to run'
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
 
-  notify:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Notify on Teams
-      if: failure()
-      run: |
-        curl -H 'Content-Type: application/json' \
-        -d "{\"text\": \" A pipeline step has failed. Sending notification at the job level for ${{ github.repository }} in branch ${{ github.ref }}\"}" \
-        ${{ env.TEAMS_WEBHOOK_URL }}
+      - name: Scan Docker image with Trivy
+        run: |
+          trivy image --exit-code 1 --severity HIGH,CRITICAL nginx > trivy-report.txt
+
+      - name: Notify scan result on Teams
+        if: failure()
+        run: |
+          SCAN_RESULT=$(cat trivy-report.txt)
+          curl -H 'Content-Type: application/json' \
+          -d "{\"text\": \"🔍 Docker image scan completed for ${{ github.repository }} in branch ${{ github.ref }}, and vulnerabilities found. Scan Report:\n$SCAN_RESULT\"}" \
+          ${{ env.TEAMS_WEBHOOK_URL }}
