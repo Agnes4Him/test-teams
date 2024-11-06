@@ -18,9 +18,12 @@ jobs:
         run: |
           echo 'I am not likely to run'
 
-      - name: Send message to Teams
-        if: failure()
-        run: |
-          curl -H 'Content-Type: application/json' \
-          -d "{\"text\": \" A pipeline step has failed for ${{ github.repository }} in branch ${{ github.ref }}\"}" \
-          ${{ env.TEAMS_WEBHOOK_URL }}
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Notify on Teams
+      if: failure()
+      run: |
+        curl -H 'Content-Type: application/json' \
+        -d "{\"text\": \" A pipeline step has failed. Sending notification at the job level for ${{ github.repository }} in branch ${{ github.ref }}\"}" \
+        ${{ env.TEAMS_WEBHOOK_URL }}
