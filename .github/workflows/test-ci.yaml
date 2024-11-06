@@ -25,7 +25,7 @@ jobs:
         run: npm run test && cat ctrf/ctrf-report.json
 
       - name: Send failed test result to teams-ctrf
-        if: always()
+        if: failure()
         run: |
           export TEAMS_WEBHOOK_URL=${{ env.TEAMS_WEBHOOK_URL }}
           npx teams-ctrf results ctrf/ctrf-report.json
