@@ -22,20 +22,13 @@ jobs:
         run: npm install
 
       - name: Run test
-        run: npm run test
+        run: npm run test && cat ctrf/ctrf-report.json
 
       - name: Send failed test result to teams-ctrf
+        if: always()
         run: |
           export TEAMS_WEBHOOK_URL=${{ env.TEAMS_WEBHOOK_URL }}
           npx teams-ctrf results ctrf/ctrf-report.json
-
-      - name: Output test result to console
-        run: |
-           cat ctrf/ctrf-report.json
-
-      - name: Notify Teams
-        if: always()
-        run: |
           curl -H 'Content-Type: application/json' \
           -d "{\"text\": \"❌ Test result for ${{ github.repository }} in branch ${{ github.ref }}\"}" \
           ${{ env.TEAMS_WEBHOOK_URL }}
