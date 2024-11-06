@@ -15,7 +15,7 @@ jobs:
           echo 'Welcome to GitHub Actions'
 
       - name: Send message to Teams
-        if: success()
+        if: failure()
         run: |
           curl -H 'Content-Type: application/json' \
           -d "{\"text\": \" Test message to Microsoft Teams for ${{ github.repository }} in branch ${{ github.ref }}\"}" \
