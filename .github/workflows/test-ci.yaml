@@ -25,11 +25,11 @@ jobs:
         run: npm run test && cat ctrf/ctrf-report.json
 
       - name: Send failed test result to teams-ctrf
-        if: failure()
+        if: always()
         run: |
           export TEAMS_WEBHOOK_URL=${{ env.TEAMS_WEBHOOK_URL }}
           npx teams-ctrf results ctrf/ctrf-report.json
           curl -H 'Content-Type: application/json' \
           -d "{\"text\": \"❌ Test for ${{ github.repository }} in branch ${{ github.ref }} has failed. \
-          Please check and remediate the erroe at https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/job/${{ github.job_id }}\"}" \
+          Please check and remediate the error at https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/job/${{ github.job_id }}\"}" \
           ${{ env.TEAMS_WEBHOOK_URL }}
