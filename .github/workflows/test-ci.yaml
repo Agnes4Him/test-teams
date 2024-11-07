@@ -30,5 +30,6 @@ jobs:
           export TEAMS_WEBHOOK_URL=${{ env.TEAMS_WEBHOOK_URL }}
           npx teams-ctrf results ctrf/ctrf-report.json
           curl -H 'Content-Type: application/json' \
-          -d "{\"text\": \"❌ Test result for ${{ github.repository }} in branch ${{ github.ref }}\"}" \
+          -d "{\"text\": \"❌ Test for ${{ github.repository }} in branch ${{ github.ref }} has failed. \
+          Please check and remediate the erroe at https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/job/${{ github.job_id }}\"}" \
           ${{ env.TEAMS_WEBHOOK_URL }}
