@@ -31,5 +31,5 @@ jobs:
           npx teams-ctrf results ctrf/ctrf-report.json
           curl -H 'Content-Type: application/json' \
           -d "{\"text\": \"❌ Test for ${{ github.repository }} in branch ${{ github.ref }} has failed. \
-          Please check and remediate the error at https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/job/${{ github.job_id }}\"}" \
+          Please check and remediate the error at https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}" \
           ${{ env.TEAMS_WEBHOOK_URL }}
